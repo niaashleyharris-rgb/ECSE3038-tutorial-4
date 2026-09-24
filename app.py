@@ -45,7 +45,7 @@ def update_device(name: str, updated_device: Device):
         if d["name"] == name:
             readings[i] = updated_device.model_dump()
             return readings[i]
-        raise HTTPException(status_code=404, detail="No device called " + name)
+    raise HTTPException(status_code=404, detail="No device called " + name)
     readings.append(updated_device.model_dump())
     return updated_device
 
