@@ -35,11 +35,11 @@ def get_device(name: str):
     raise HTTPException(status_code=404, detail="No device called " + name)
 
 
-@app.post("/devices", status_code=201)
-def create_device(device: Device):
-    new_device = device.model_dump()
-    readings.append(new_device)
-    return new_device
+#@app.post("/devices", status_code=201)
+#def create_device(device: Device):
+#    new_device = device.model_dump()
+#    readings.append(new_device)
+#    return new_device
 
 @app.put("/devices/{name}")
 def update_device(name: str, updated_device: Device):
@@ -59,3 +59,14 @@ def delete_device(name: str):
             readings.remove(device)
             return {"deleted": name}
     raise HTTPException(status_code=404, detail="No device called " + name)
+
+    #write a new post handler that loops over readings and if a device is found that already has the same name then raise a 409 status code http exception, otherwise append and return a 201   
+@app.post("/devices", status_code=201)
+def create_device(device: Device):
+    new_device = device.model_dump()
+    for existing_device in readings:
+        if existing_device["name"] == new_device["name"]:
+            raise HTTPException(status_code=409, detail="A device called " + new_device["name"] + " already exists")
+    readings.append(new_device)
+    return new_device       
+
